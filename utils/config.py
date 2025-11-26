@@ -62,6 +62,11 @@ WAF_SIGNATURES = {
     'Sucuri': ['sucuri', 'x-sucuri'],
     'Barracuda': ['barra_counter_session'],
     'F5 BIG-IP': ['bigip', 'f5'],
+    # 2025 additions
+    'Fortinet FortiWeb': ['fortigate', 'fortiwebsession'],
+    'Radware AppWall': ['radware', 'appwall'],
+    'F5 ASM': ['f5-asm', 'ts_cookie'],
+    'Citrix NetScaler': ['ns_af', 'citrix_ns_id']
 }
 
 # Payload files
@@ -96,3 +101,9 @@ COMMON_FILE_FIELDS = [
     'userfile',
     'uploadfile'
 ]
+
+# Proxy configuration (optional)
+PROXY_CONFIG = {
+    'http': None,  # Example: 'http://proxy:port'
+    'https': None  # Example: 'https://proxy:port'
+}

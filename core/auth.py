@@ -6,19 +6,27 @@ Handles Selenium browser automation, cookie extraction, and WAF detection
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import TimeoutException, WebDriverException
 import time
 
 # Global browser instance
 browser = None
 
-def start_selenium():
+def start_selenium(headless=False):
     """
     Launch Chrome browser with stealth options
+    Args:
+        headless: Run browser in headless mode (default: False)
     Returns: WebDriver instance
     """
     global browser
     
     options = Options()
+    
+    # Headless mode
+    if headless:
+        options.add_argument('--headless=new')
+    
     # Stealth options
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -30,10 +38,19 @@ def start_selenium():
     options.add_argument('--no-sandbox')
     
     try:
-        browser = webdriver.Chrome(options=options)
+        # Selenium 4 Service pattern - auto-managed by Selenium Manager
+        service = Service()
+        browser = webdriver.Chrome(service=service, options=options)
+        
+        # Set browser timeouts
+        browser.implicitly_wait(10)  # Wait up to 10s for elements
+        browser.set_page_load_timeout(30)  # Page load timeout 30s
+        
         # Override navigator.webdriver flag
         browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         return browser
+    except WebDriverException as e:
+        raise Exception(f"Failed to start browser: {str(e)}\nMake sure Chrome/Chromium is installed.")
     except Exception as e:
         raise Exception(f"Failed to start browser: {str(e)}")
 
@@ -48,9 +65,15 @@ def manual_login_wait(url):
     global browser
     
     if not browser:
-        raise Exception("Browser not initialized. Call start_selenium() first.")
+        raise WebDriverException("Browser not initialized. Call start_selenium() first.")
     
-    browser.get(url)
+    try:
+        browser.get(url)
+    except TimeoutException:
+        raise TimeoutException(f"Timeout loading URL: {url}. Page took longer than 30 seconds.")
+    except WebDriverException as e:
+        raise WebDriverException(f"Failed to load URL {url}: {str(e)}")
+    
     print(f"[*] Browser opened at: {url}")
     print("[*] Please login manually in the browser window")
     input("[*] Press Enter after you've logged in...")
@@ -121,7 +144,12 @@ def detect_waf(url):
         'Imperva': ['incapsula', 'visid_incap'],
         'ModSecurity': ['mod_security', 'modsecurity'],
         'Wordfence': ['wordfence'],
-        'Sucuri': ['sucuri', 'x-sucuri']
+        'Sucuri': ['sucuri', 'x-sucuri'],
+        # 2025 additions
+        'Fortinet FortiWeb': ['fortigate', 'fortiwebsession'],
+        'Radware AppWall': ['radware', 'appwall'],
+        'F5 ASM': ['f5-asm', 'ts_cookie'],
+        'Citrix NetScaler': ['ns_af', 'citrix_ns_id']
     }
     
     try:
@@ -148,7 +176,10 @@ def detect_waf(url):
         
         return False, None
         
-    except Exception as e:
+    except TimeoutException:
+        print(f"[!] Timeout during WAF detection for {url}")
+        return False, None
+    except WebDriverException as e:
         print(f"[!] Error during WAF detection: {str(e)}")
         return False, None
 
@@ -170,12 +201,13 @@ def close_browser():
     return True
 
 
-def get_session_data(login_url, upload_url):
+def get_session_data(login_url, upload_url, headless=False):
     """
     Complete authentication flow and return session data
     Args:
         login_url: URL of login page
         upload_url: URL to check for WAF
+        headless: Run browser in headless mode
     Returns: Dictionary with cookies, headers, and WAF info
     """
     session_data = {
@@ -187,7 +219,7 @@ def get_session_data(login_url, upload_url):
     
     try:
         # Start browser
-        start_selenium()
+        start_selenium(headless)
         
         # Manual login
         manual_login_wait(login_url)
@@ -203,6 +235,8 @@ def get_session_data(login_url, upload_url):
         
         return session_data
         
+    except WebDriverException as e:
+        raise WebDriverException(f"Browser error during authentication: {str(e)}")
     except Exception as e:
         raise Exception(f"Authentication failed: {str(e)}")
     finally:

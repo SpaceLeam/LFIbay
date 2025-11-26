@@ -18,12 +18,19 @@ An automated Local File Inclusion (LFI) testing tool for upload forms. Uses Sele
 
 ## Installation
 
+**Requirements:**
+- Python 3.11 or 3.12 (recommended)
+- Chrome or Chromium browser installed
+
 ```bash
 # Clone or navigate to LFIBay directory
 cd LFIBay
 
 # Install dependencies
 pip install -r requirements.txt
+
+# ChromeDriver will be auto-installed by Selenium Manager
+# No manual ChromeDriver setup needed!
 ```
 
 ## Usage
@@ -125,13 +132,25 @@ Reports are saved to `output/reports/` with timestamp:
 - **JSON** - Machine-readable format for further processing
 - **HTML** - Human-readable with syntax highlighting
 
+## 2025 Enhancements
+
+### ✨ Latest Updates
+- **Python 3.11-3.12 Support** - Optimized for latest stable Python versions
+- **Selenium 4 Auto-Driver** - ChromeDriver auto-managed by Selenium Manager
+- **Headless Mode** - Run without GUI for server environments
+- **Enhanced WAF Detection** - Now detects 13+ WAF types including Fortinet, Radware, F5 ASM, Citrix
+- **Improved Stealth** - Rate limiting with jitter for more natural request patterns
+- **Better Error Handling** - Specific exception handling for more reliable operation
+- **Proxy Support** - Ready for proxy configuration (see `utils/config.py`)
+
 ## Tech Stack
 
-- Python 3.13.9+
-- Selenium (browser automation)
-- Requests (HTTP client)
-- BeautifulSoup4 (HTML parsing)
-- Colorama (terminal colors)
+- **Python 3.11-3.12** (recommended)
+- **Selenium 4.30+** (browser automation)
+- **Requests 2.31+** (HTTP client)
+- **BeautifulSoup4 4.12+** (HTML parsing)
+- **Colorama 0.4.6+** (terminal colors)
+- **LXML 5.0+** (fast XML/HTML processing)
 
 ## Contributing
 

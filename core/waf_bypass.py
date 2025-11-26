@@ -52,13 +52,17 @@ def get_random_user_agent():
 
 def add_random_delay(min_delay=1, max_delay=3):
     """
-    Add random delay between requests
+    Add random delay between requests with jitter
     Args:
         min_delay: Minimum delay in seconds
         max_delay: Maximum delay in seconds
     """
-    delay = random.uniform(min_delay, max_delay)
-    time.sleep(delay)
+    # Base delay
+    base_delay = random.uniform(min_delay, max_delay)
+    # Add jitter (up to 30% variation)
+    jitter = base_delay * (random.random() * 0.3)
+    total_delay = base_delay + jitter
+    time.sleep(total_delay)
 
 
 def encode_payload(payload, technique='url'):

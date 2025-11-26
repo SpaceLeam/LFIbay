@@ -2,11 +2,28 @@
 """
 LFIBay - Automated LFI Testing Tool
 Main entry point and orchestration
+
+Supported Python Versions: 3.11 - 3.12
 """
 
 import os
 import sys
 from datetime import datetime
+
+# Version check - warn if using Python 3.13+
+if sys.version_info >= (3, 13):
+    print("⚠️  Warning: Python 3.13+ not fully supported. Recommended: Python 3.11-3.12")
+    print(f"   Current version: {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
+    response = input("   Continue anyway? (y/N): ").strip().lower()
+    if response != 'y':
+        print("   Exiting. Please use Python 3.11 or 3.12")
+        sys.exit(1)
+    print()
+
+# Minimum version check
+if sys.version_info < (3, 11):
+    print(f"❌ Error: Python 3.11+ is required. Current version: {sys.version_info.major}.{sys.version_info.minor}")
+    sys.exit(1)
 
 # Add current directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
