@@ -2,20 +2,31 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 3.0.x   | :white_check_mark: |
+| 2.0.x   | :x:                |
+| < 2.0   | :x:                |
 
-## Reporting a Vulnerability
+## Reporting Vulnerabilities
 
-Use this section to tell people how to report a vulnerability.
+Found a security issue in LFIBay itself (not in targets)?
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+**Report via:**
+- Email: seetmadilog07@gmail.com
+- GitHub Security tab
+
+**Include:**
+- Description + steps to reproduce
+- Impact assessment
+
+**Response:**
+- Initial reply: 48 hours
+- Updates: weekly
+- Fix: 2-4 weeks depending on severity
+
+Credit given in release notes if wanted.
+
+## Legal
+
+For authorized security testing only. Get written permission before testing any system.
