@@ -6,7 +6,40 @@ Enhanced with entropy analysis, similarity checking, and header anomaly detectio
 
 import re
 import math
+import hashlib
 from difflib import SequenceMatcher
+
+
+def calculate_content_hash(content):
+    """
+    Calculate SHA256 hash of response content
+    Args:
+        content: String content to hash
+    Returns: SHA256 hex digest or None if content is empty
+    """
+    if not content:
+        return None
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
+
+def are_responses_identical(response1, response2):
+    """
+    Check if two responses are identical using content hash comparison
+    Args:
+        response1: First response dictionary
+        response2: Second response dictionary
+    Returns: True if responses have identical content, False otherwise
+    """
+    content1 = response1.get('content', '')
+    content2 = response2.get('content', '')
+    
+    hash1 = calculate_content_hash(content1)
+    hash2 = calculate_content_hash(content2)
+    
+    if hash1 and hash2:
+        return hash1 == hash2
+    
+    return False
 
 
 def baseline_request(url, cookies, headers, form_info, scanner):
@@ -176,14 +209,29 @@ def analyze_response(response, payload, baseline=None):
                 detection['confidence'] = 'high'
     
     # 7. Check for null byte success (file extension bypass)
-    if '%00' in payload or '\\x00' in payload:
-        # If we got content that looks like it bypassed extension check
+    if '%00' in payload or '\x00' in payload:
+        # More strict check - verify actual bypass occurred
+        # Look for actual file content patterns, not just response size
         if len(content) > 100 and status_code == 200:
-            detection['evidence'].append("Possible null byte injection success")
-            if not detection['vulnerable']:
-                detection['vulnerable'] = True
-                detection['confidence'] = 'medium'
-            detection['method'].append('null_byte')
+            # Check if response contains actual file content indicators
+            has_file_content = any([
+                re.search(pattern, content, re.IGNORECASE) 
+                for pattern in error_patterns + list(system_file_patterns.values())
+            ])
+            
+            if has_file_content:
+                detection['evidence'].append("Null byte injection bypassed extension check")
+                if not detection['vulnerable']:
+                    detection['vulnerable'] = True
+                    detection['confidence'] = 'high'
+                detection['method'].append('null_byte')
+            else:
+                # Just size anomaly, lower confidence
+                detection['evidence'].append("Possible null byte effect (low confidence)")
+                if not detection['vulnerable']:
+                    detection['vulnerable'] = True
+                    detection['confidence'] = 'low'
+                detection['method'].append('null_byte_maybe')
     
     # 8. Entropy analysis for base64 content
     entropy = calculate_entropy(content)
@@ -205,6 +253,15 @@ def analyze_response(response, payload, baseline=None):
                 detection['vulnerable'] = True
                 detection['confidence'] = 'low'
             detection['method'].append('header_anomaly')
+    
+    # 10. Calculate final confidence score based on all detection methods
+    if detection['vulnerable']:
+        detection['confidence'] = calculate_confidence_score(
+            detection['method'],
+            detection['evidence'],
+            content,
+            baseline
+        )
     
     return detection
 
@@ -292,7 +349,7 @@ def compare_similarity(response1, response2):
 
 def detect_header_anomalies(headers, baseline=None):
     """
-    Detect anomalies in response headers
+    Detect anomalies in response headers (improved to reduce false positives)
     Args:
         headers: Response headers dictionary
         baseline: Baseline metrics (optional)
@@ -300,26 +357,103 @@ def detect_header_anomalies(headers, baseline=None):
     """
     anomalies = []
     
-    # Check for missing common headers
-    expected_headers = ['Content-Type', 'Content-Length', 'Server']
-    for header in expected_headers:
-        if header not in headers:
-            anomalies.append(f"Missing {header} header")
-    
-    # Check for unusual Content-Type
+    # Check for unusual Content-Type that suggests file read
     content_type = headers.get('Content-Type', '').lower()
-    if content_type and 'text/html' not in content_type and 'text/plain' not in content_type:
-        if 'application/octet-stream' in content_type:
-            anomalies.append(f"Unusual Content-Type: {content_type}")
+    if content_type:
+        # Only flag truly suspicious content types
+        suspicious_types = ['application/octet-stream', 'application/binary']
+        if any(susp in content_type for susp in suspicious_types):
+            # But not if it's from a legitimate file upload response
+            if 'download' not in headers.get('Content-Disposition', '').lower():
+                anomalies.append(f"Suspicious Content-Type: {content_type}")
     
-    # Check for X-Powered-By or Server headers that indicate PHP
+    # Check for X-Powered-By headers indicating PHP errors
     if 'X-Powered-By' in headers:
         powered_by = headers['X-Powered-By']
-        if 'PHP' in powered_by:
-            # Not really an anomaly, but useful info
-            pass
+        # Only useful info, not an anomaly by itself
+        pass
+    
+    # Check for error-indicating headers
+    if headers.get('X-Error'):
+        anomalies.append(f"Error header present: {headers['X-Error']}")
     
     return anomalies
+
+
+def calculate_confidence_score(detection_methods, evidence_list, content='', baseline=None):
+    """
+    Calculate confidence score based on multiple factors
+    Args:
+        detection_methods: List of detection methods that triggered
+        evidence_list: List of evidence strings
+        content: Response content for additional analysis
+        baseline: Baseline metrics for comparison
+    Returns: String confidence level (high/medium/low/none)
+    """
+    score = 0
+    
+    # High-confidence detection methods (30 points each)
+    high_confidence_methods = [
+        'error_pattern',
+        'content_pattern',
+        'base64_content',
+        'directory_listing'
+    ]
+    
+    # Medium-confidence methods (15 points each)
+    medium_confidence_methods = [
+        'size_anomaly',
+        'null_byte',
+        'entropy_analysis'
+    ]
+    
+    # Low-confidence methods (5 points each)
+    low_confidence_methods = [
+        'timing_anomaly',
+        'header_anomaly',
+        'similarity_check',
+        'null_byte_maybe'
+    ]
+    
+    # Score based on detection methods
+    for method in detection_methods:
+        if method in high_confidence_methods:
+            score += 30
+        elif method in medium_confidence_methods:
+            score += 15
+        elif method in low_confidence_methods:
+            score += 5
+    
+    # Bonus for multiple methods (more methods = higher confidence)
+    unique_methods = len(set(detection_methods))
+    if unique_methods >= 3:
+        score += 20
+    elif unique_methods >= 2:
+        score += 10
+    
+    # Evidence quality boost
+    high_quality_evidence = [
+        'root:x:',
+        'failed to open stream',
+        'include()',
+        'require()',
+        'base64'
+    ]
+    
+    for evidence in evidence_list:
+        if any(keyword in evidence.lower() for keyword in high_quality_evidence):
+            score += 10
+            break  # Only count once
+    
+    # Classify score
+    if score >= 80:
+        return 'high'
+    elif score >= 50:
+        return 'medium'
+    elif score >= 30:
+        return 'low'
+    else:
+        return 'none'
 
 
 def analyze_response_advanced(response, payload, baseline=None, history=None):

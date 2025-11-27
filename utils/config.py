@@ -19,25 +19,33 @@ DEFAULT_HEADERS = {
     'Upgrade-Insecure-Requests': '1'
 }
 
-# Detection patterns for LFI
+# Detection patterns for LFI with confidence levels
 DETECTION_PATTERNS = {
-    # Linux system files
-    'linux_passwd': r'root:x:\d+:\d+',
-    'linux_shadow': r'root:\$',
-    'linux_group': r'root:x:0:',
-    
-    # Windows system files
-    'windows_ini': r'\[extensions\]',
-    'windows_hosts': r'127\.0\.0\.1\s+localhost',
-    
-    # PHP code
-    'php_code': r'<\?php',
-    
-    # Configuration files
-    'config_db': r'(mysql|database|db).*password',
+    'high_confidence': {
+        # System files with distinct patterns
+        'linux_passwd': r'root:x:\d+:\d+',
+        'linux_shadow': r'root:\$\d+\$',
+        'linux_group': r'root:x:0:',
+        'windows_ini': r'\[extensions\]',
+        'windows_hosts': r'127\.0\.0\.1\s+localhost',
+        'php_source': r'<\?php\s+(?:include|require)',
+    },
+    'medium_confidence': {
+        # Config files
+        'config_db': r'(?:mysql|database|db).*password\s*=',
+        'apache_config': r'(?:ServerName|DocumentRoot|VirtualHost)',
+        'nginx_config': r'(?:server_name|root|location)',
+        'env_file': r'(?:DB_PASSWORD|API_KEY|SECRET)',
+        'php_code': r'<\?php',
+    },
+    'low_confidence': {
+        # Generic patterns
+        'generic_config': r'=\s*["\'].*["\']',
+        'session_files': r'sess_[a-z0-9]{26,}',
+    }
 }
 
-# Error message patterns indicating LFI
+# Error message patterns indicating LFI (all high confidence)
 ERROR_PATTERNS = [
     r'failed to open stream',
     r'include\(\)',
