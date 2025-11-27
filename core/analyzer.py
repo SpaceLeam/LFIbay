@@ -1,9 +1,12 @@
 """
 LFIBay - Analyzer Module
 Response analysis and LFI detection logic
+Enhanced with entropy analysis, similarity checking, and header anomaly detection
 """
 
 import re
+import math
+from difflib import SequenceMatcher
 
 
 def baseline_request(url, cookies, headers, form_info, scanner):
@@ -148,12 +151,12 @@ def analyze_response(response, payload, baseline=None):
                     detection['confidence'] = 'medium'
                 detection['method'].append('size_anomaly')
     
-    # 5. Timing anomaly (for wrapper timeouts)
-    if response_time > 10:  # 10 seconds
+    # 5. Enhanced timing detection with threshold
+    if response_time > 5:  # 5 seconds (lowered threshold)
         detection['evidence'].append(f"Slow response time: {response_time:.2f}s (possible wrapper execution)")
         if not detection['vulnerable']:
             detection['vulnerable'] = True
-            detection['confidence'] = 'low'
+            detection['confidence'] = 'medium' if response_time > 10 else 'low'
         detection['method'].append('timing_anomaly')
     
     # 6. Check for directory traversal success indicators
@@ -181,6 +184,27 @@ def analyze_response(response, payload, baseline=None):
                 detection['vulnerable'] = True
                 detection['confidence'] = 'medium'
             detection['method'].append('null_byte')
+    
+    # 8. Entropy analysis for base64 content
+    entropy = calculate_entropy(content)
+    if entropy > 5.0 and len(content) > 200:  # High entropy suggests base64/compressed data
+        detection['evidence'].append(f"High content entropy: {entropy:.2f} (possible base64/encoded data)")
+        if 'base64' not in [m for m in detection['method']]:
+            if not detection['vulnerable']:
+                detection['vulnerable'] = True
+                detection['confidence'] = 'medium'
+            detection['method'].append('entropy_analysis')
+    
+    # 9. Header anomaly detection
+    headers = response.get('headers', {})
+    if headers:
+        header_anomalies = detect_header_anomalies(headers, baseline)
+        if header_anomalies:
+            detection['evidence'].extend([f"Header anomaly: {a}" for a in header_anomalies])
+            if not detection['vulnerable']:
+                detection['vulnerable'] = True
+                detection['confidence'] = 'low'
+            detection['method'].append('header_anomaly')
     
     return detection
 
@@ -217,3 +241,115 @@ def generate_findings(results, baseline=None):
     findings.sort(key=lambda x: confidence_order.get(x['confidence'], 0), reverse=True)
     
     return findings
+
+
+def calculate_entropy(data):
+    """
+    Calculate Shannon entropy of data
+    Args:
+        data: String data
+    Returns: Float entropy value
+    """
+    if not data:
+        return 0.0
+    
+    entropy = 0.0
+    data_len = len(data)
+    
+    # Count character frequencies
+    freq = {}
+    for char in data:
+        freq[char] = freq.get(char, 0) + 1
+    
+    # Calculate entropy
+    for count in freq.values():
+        if count > 0:
+            probability = count / data_len
+            entropy -= probability * math.log2(probability)
+    
+    return entropy
+
+
+def compare_similarity(response1, response2):
+    """
+    Compare similarity between two responses
+    Args:
+        response1: First response dictionary
+        response2: Second response dictionary
+    Returns: Float similarity score (0.0 to 1.0)
+    """
+    content1 = response1.get('content', '')
+    content2 = response2.get('content', '')
+    
+    if not content1 or not content2:
+        return 0.0
+    
+    # Use difflib SequenceMatcher
+    similarity = SequenceMatcher(None, content1, content2).ratio()
+    
+    return similarity
+
+
+def detect_header_anomalies(headers, baseline=None):
+    """
+    Detect anomalies in response headers
+    Args:
+        headers: Response headers dictionary
+        baseline: Baseline metrics (optional)
+    Returns: List of detected anomalies
+    """
+    anomalies = []
+    
+    # Check for missing common headers
+    expected_headers = ['Content-Type', 'Content-Length', 'Server']
+    for header in expected_headers:
+        if header not in headers:
+            anomalies.append(f"Missing {header} header")
+    
+    # Check for unusual Content-Type
+    content_type = headers.get('Content-Type', '').lower()
+    if content_type and 'text/html' not in content_type and 'text/plain' not in content_type:
+        if 'application/octet-stream' in content_type:
+            anomalies.append(f"Unusual Content-Type: {content_type}")
+    
+    # Check for X-Powered-By or Server headers that indicate PHP
+    if 'X-Powered-By' in headers:
+        powered_by = headers['X-Powered-By']
+        if 'PHP' in powered_by:
+            # Not really an anomaly, but useful info
+            pass
+    
+    return anomalies
+
+
+def analyze_response_advanced(response, payload, baseline=None, history=None):
+    """
+    Advanced analysis with historical comparison
+    Args:
+        response: Response dictionary from test_payload
+        payload: The payload that was tested
+        baseline: Baseline metrics (optional)
+        history: List of previous responses for similarity checking
+    Returns: Dictionary with detection results
+    """
+    # Start with standard analysis
+    detection = analyze_response(response, payload, baseline)
+    
+    # Add similarity checking if we have history
+    if history and len(history) > 0:
+        similarities = []
+        for hist_resp in history[-5:]:  # Check last 5 responses
+            sim = compare_similarity(response, hist_resp)
+            similarities.append(sim)
+        
+        avg_similarity = sum(similarities) / len(similarities)
+        
+        # If response is very different from recent responses
+        if avg_similarity < 0.5:  # Less than 50% similar
+            detection['evidence'].append(f"Response differs significantly from baseline (similarity: {avg_similarity:.2%})")
+            if not detection['vulnerable']:
+                detection['vulnerable'] = True
+                detection['confidence'] = 'low'
+            detection['method'].append('similarity_check')
+    
+    return detection

