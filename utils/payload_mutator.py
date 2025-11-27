@@ -300,7 +300,6 @@ def mutate_all(payloads, max_mutations_per_payload=15):
     return all_mutated
 
 
-<<<<<<< Updated upstream
 def smart_mutate(payloads, target_detected=None):
     """
     Intelligently mutate based on detected target characteristics
@@ -310,12 +309,6 @@ def smart_mutate(payloads, target_detected=None):
     Returns: List of targeted mutations
     """
     if target_detected is None:
-=======
-def smart_mutate(payloads, target_detected=None, max_mutations=10):
-    """Smart mutation based on target detection"""
-    # TODO: add ML-based mutation selection?
-    if not target_detected:
->>>>>>> Stashed changes
         target_detected = {}
     
     mutations = []

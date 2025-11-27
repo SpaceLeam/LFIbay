@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # LFIBay Changelog
 
 ## Version 3.0 (2025-11-26) - Advanced Bug Bounty Edition 🔥
@@ -224,11 +223,6 @@ Detects 8+ WAF types:
 ---
 
 ## Version 2.0 (2025-11-25) - 2025 Compatibility Update
-=======
-# Changelog
-
-## v3.0 - 2025-11-26
->>>>>>> Stashed changes
 
 Major update with advanced exploitation features for bug bounty work.
 
@@ -265,11 +259,7 @@ Added 6 new detection methods (total now 13):
 - Improved status code analysis
 - Historical comparison
 
-<<<<<<< Updated upstream
 Total WAF detection: **13 WAF types** (version 2.0)
-=======
-### Attack Chains
->>>>>>> Stashed changes
 
 Implemented 4 automated attack paths:
 1. Upload + LFI to zip wrapper
@@ -279,25 +269,10 @@ Implemented 4 automated attack paths:
 
 ### Known Issues
 
-<<<<<<< Updated upstream
 ---
-=======
-- Filter chains may not work on older PHP versions (< 5.3)
-- Log poisoning requires readable log files
-- Some mutations can be slow with large payload sets
-- Chain detection needs more testing on different targets
-
-### Performance
-
-Detection improved significantly but exact numbers vary by target. Generally seeing better results on:
-- WAF bypass success
-- LFI to RCE escalation
-- Overall vulnerability detection
->>>>>>> Stashed changes
 
 ## v2.0 - 2025-11-25
 
-<<<<<<< Updated upstream
 ### Version 3.0
 - **None**: All changes are additive and backward compatible
 
@@ -312,18 +287,12 @@ Detection improved significantly but exact numbers vary by target. Generally see
 - **Before**: Direct `webdriver.Chrome(options=options)`
 - **After**: `webdriver.Chrome(service=service, options=options)`
 - **Reason**: Selenium 4 best practices
-=======
-Python 3.11-3.12 compatibility update.
-
-### Critical Fixes
->>>>>>> Stashed changes
 
 - Python version check (requires 3.11-3.12, warns on 3.13+)
 - Selenium 4 Service pattern implementation
 - Auto ChromeDriver management via Selenium Manager
 - Browser timeouts (10s implicit, 30s page load)
 
-<<<<<<< Updated upstream
 ## Acknowledgments
 
 Version 3.0 features based on 2025 bug bounty research:
@@ -338,61 +307,3 @@ Version 3.0 features based on 2025 bug bounty research:
 **Last Updated**: 2025-11-26
 **Version**: 3.0
 **Compatibility**: Python 3.11-3.12, Selenium 4.30+
-=======
-### Enhancements
-
-- Headless mode support
-- Better error handling (specific exceptions)
-- Enhanced WAF detection (13 types total)
-- Rate limiting with jitter (up to 30% variation)
-- Updated dependencies with version constraints
-
-### WAF Detection
-
-Added signatures for:
-- Fortinet FortiWeb
-- Radware AppWall
-- F5 ASM
-- Citrix NetScaler
-
-### Breaking Changes
-
-Python version requirement changed from 3.13+ to 3.11-3.12 for better stability.
-
-Selenium API updated to use Service pattern instead of direct webdriver call.
-
-## Migration Notes
-
-For existing users:
-
-Check Python version:
-```bash
-python3 --version  # Should be 3.11.x or 3.12.x
-```
-
-Upgrade dependencies:
-```bash
-pip install --upgrade -r requirements.txt
-```
-
-Remove old ChromeDriver if manually installed (Selenium Manager handles it now).
-
-## Todo
-
-- [ ] Add progress save/resume functionality
-- [ ] Cookie persistence to skip re-auth
-- [ ] CLI argument support
-- [ ] Multi-threading for faster scans
-- [ ] Custom payload templates
-
-## Credits
-
-Filter chain technique from Synacktiv research.
-WAF bypass methods from various bug bounty reports and CTF challenges.
-
----
-
-Last Updated: 2025-11-26
-Version: 3.0
-Compatibility: Python 3.11-3.12, Selenium 4.30+
->>>>>>> Stashed changes

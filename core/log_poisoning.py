@@ -1,10 +1,6 @@
 """
 LFIBay - Log Poisoning Module
-<<<<<<< Updated upstream
 Multi-service log poisoning for LFI to RCE exploitation
-=======
-Multi-service log poisoning for LFI to RCE
->>>>>>> Stashed changes
 """
 
 import requests
@@ -14,7 +10,6 @@ import re
 
 
 def poison_apache_log(target_url, payload, method='user_agent'):
-<<<<<<< Updated upstream
     """
     Inject PHP code into Apache/Nginx access logs via User-Agent header
     Args:
@@ -23,9 +18,6 @@ def poison_apache_log(target_url, payload, method='user_agent'):
         method: Injection method ('user_agent', 'referer', 'cookie')
     Returns: Dictionary with injection result
     """
-=======
-    """Inject PHP code into Apache/Nginx logs via User-Agent"""
->>>>>>> Stashed changes
     try:
         headers = {}
         
@@ -64,7 +56,6 @@ def poison_apache_log(target_url, payload, method='user_agent'):
 
 
 def poison_nginx_log(target_url, payload):
-<<<<<<< Updated upstream
     """
     Inject PHP code into Nginx logs via Referer header
     Args:
@@ -72,10 +63,6 @@ def poison_nginx_log(target_url, payload):
         payload: PHP payload to inject
     Returns: Dictionary with injection result
     """
-=======
-    """Inject PHP code into Nginx logs via Referer"""
-    # Just use referer method, works better for nginx
->>>>>>> Stashed changes
     return poison_apache_log(target_url, payload, method='referer')
 
 

